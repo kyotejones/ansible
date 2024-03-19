@@ -6,3 +6,6 @@
     ansible.builtin.package:
       name: vim
       state: present
+
+
+# ansible all -i inventory -m service -a "name=firewalld state=stopped enabled=false" -k
