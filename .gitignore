@@ -392,5 +392,7 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 
+# Custom Stuff
 demeron/
 inventory*
+*.swp
