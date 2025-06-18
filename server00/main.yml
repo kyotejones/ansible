@@ -1,0 +1,54 @@
+---
+- name: Deploy Elastic Search
+  hosts: all
+  gather_facts: false
+  become: true
+
+  tasks:
+    - name: Install packages
+      ansible.builtin.package:
+        name:
+          - git
+          - ansible-core
+          - tmux
+        state: latest
+
+    - name: Update limits for elasticsearch nofile
+      community.general.pam_limits:
+        domain: elasticsearch
+        limit_type: "-"
+        limit_item: nofile
+        value: 65535
+
+    - name: Set Swappiness to 1
+      ansible.posix.sysctl:
+        name: vm.swappiness
+        value: '1'
+        state: present
+
+    - name: Set vm.max_map_count to 262144
+      ansible.posix.sysctl:
+        name: vm.max_map_count
+        value: '262144'
+        state: present
+
+    - name: Set net.ipv4.tcp_retries2 to 5
+      ansible.posix.sysctl:
+        name: net.ipv4.tcp_retries2
+        value: '5'
+        state: present
+
+    - name: Add ELK Repository
+      ansible.builtin.yum_repository:
+        name: elasticsearch
+        description: Elasticsearch repository for 9.x packages
+        baseurl: https://artifacts.elastic.co/packages/9.x/yum
+        gpgcheck: yes
+        gpgkey: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+        enabled: no
+
+    # - name: Install the latest version of elasticsearch
+    #   ansible.builtin.dnf:
+    #     name: elasticsearch
+    #     state: latest
+    #     enablerepo: elasticsearch

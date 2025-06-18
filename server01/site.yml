@@ -1,0 +1,9 @@
+---
+- name: Deploy HTTPs Repo Server
+  hosts: all
+
+  tasks:
+  - name: Update the VM
+    package:
+      name: "*"
+      state: latest
